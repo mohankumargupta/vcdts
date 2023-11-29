@@ -1,45 +1,58 @@
-import { TemplateResult, html } from 'lit';
 import { VCDParser } from './vcdparser.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { WokwiSignals, WokwiSignal } from './types';
+import { WokwiSignals, WokwiSignal, TransformedSignal, TransformedData } from './types';
 
 
 function varDecl(varType: string, vars: any) {
   const varNames = [];
   for (const vcdVar of vars) {
-    varNames.push(html`${varType} ${vcdVar.name};\n    `);
+    varNames.push(`${varType} ${vcdVar.name};\n    `);
   }
   return varNames;
 }
 
-function wokwi_signals_string() {
-
-}
-
-function wokwi_signals(signals: WokwiSignals[], vars: any) {
-  const out: TemplateResult[] = [];
-  signals.forEach(element => {
+function wokwi_signals(signals: any) {
+  let out = '';
+  signals.forEach((element: TransformedData ) => {
     const timestamp = element.timestamp;
     let line = `{.timestamp=${timestamp}, `;
-
-    element.signals.forEach(signal => {
+    element.signals.forEach((signal: TransformedSignal ) => {
         const signal_name = signal.signal_name;
         const value = signal.value;
         console.log(signal);
         line = line.concat(`.${signal_name}=${value}, `)
       
-    });
-    
-    out.push(html`${line}},\n    `);
-    
+    });    
+    out = out.concat(`${line}},\n    `);    
   });
   return out;
 }
 
-export function to_wokwi_string(parser: VCDParser) {
+export function to_wokwi(parser: VCDParser): string {
   const signals = parser.resolve_variables();
   const signals_grouped = parser.transformToTimestamp(signals);
   const vars = parser.vars.map(element=>element.name);
+
+  const signals_lit: any = wokwi_signals(signals_grouped);
+
+  const stdio = "#include &lt;stdio.h&gt;";
+  const stdlib = "#include &lt;stdlib.h&gt;";
+
+  const varNames = varDecl("pin_t",parser.vars);
+  const varNames2 = varDecl("int", parser.vars);
+
+const out =  
+`
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include "wokwi-api.h"
+  
+    const pulse pulse_train[] = {
+    ${signals_lit}
+    };
+
+`;
+
+return out;
 }
 
 /*

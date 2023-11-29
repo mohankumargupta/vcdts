@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import hljs from 'highlight.js';
 import {VCDParser} from './vcdparser.js';
-import {to_wokwi_string} from './wokwi.js';
+import {to_wokwi} from './wokwi.js';
 import { onedark } from './onedark.js';
 
 @customElement('main-element')
@@ -16,7 +16,7 @@ export class MyElement extends LitElement {
     private original = '';
     private parsed = '';
     private resolved = '';
-    private wokwi:TemplateResult = html``;
+    private wokwi = '';
 
     disableTabs() {
       this.tab1 = false;
@@ -50,6 +50,24 @@ export class MyElement extends LitElement {
       this.tab4 = true;
       this.requestUpdate();
     } 
+
+     unEscapeHTML(htmlStr:string) {
+      htmlStr = htmlStr.replace(/&lt;/g , "<");	 
+      htmlStr = htmlStr.replace(/&gt;/g , ">");     
+      htmlStr = htmlStr.replace(/&quot;/g , "\"");  
+      htmlStr = htmlStr.replace(/&#39;/g , "\'");   
+      htmlStr = htmlStr.replace(/&amp;/g , "&");
+      return htmlStr;
+    }
+
+    escapeHTML(htmlStr: string) {
+      return htmlStr.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");        
+   
+    }
 
     b64DecodeUnicode(str: any) {
         // Going backwards: from bytestream, to percent-encoding, to original string.
@@ -93,9 +111,8 @@ export class MyElement extends LitElement {
         this.showUpload = false;
         this.parsed = hljs.highlight(this.parsed, {language:"json"}).value;
         this.resolved = hljs.highlight(this.resolved, {language: "json"}).value;
-        const wokwi_string = to_wokwi_string(parser);
-
-        //this.wokwi = hljs.highlight(this.wokwi, {language: "json"}).value;
+        this.wokwi = to_wokwi(parser);
+        this.wokwi = hljs.highlight(this.wokwi, {language: "c"}).value;
         this.requestUpdate();
         
       }
@@ -147,7 +164,7 @@ ${unsafeHTML(this.resolved)}
             <section ?hidden=${!this.tab4}>        
               <pre  class="c">
               <code> 
-${this.wokwi}
+${unsafeHTML(this.wokwi)}
               </code>
               </pre>
             </section>            
@@ -158,8 +175,12 @@ ${this.wokwi}
     static override styles = [    
        onedark,        
         css`
-        .json {
+        .json, .c {
           background-color: #333
+        }
+
+        code {
+          color: #fff;
         }
 
         pre > code {
