@@ -131,22 +131,22 @@ ${this.original}
               </pre>
             </section>
             <section ?hidden=${!this.tab2}>
-              <pre>
-              <code class="json"> 
+              <pre class="json">
+              <code> 
 ${unsafeHTML(this.parsed)}
               </code>
               </pre>   
             </section>
             <section ?hidden=${!this.tab3}>
-              <pre>
-              <code class="json"> 
+              <pre class="json">
+              <code> 
 ${unsafeHTML(this.resolved)}
               </code>
               </pre>    
             </section>
             <section ?hidden=${!this.tab4}>        
-              <pre>
-              <code class="c"> 
+              <pre  class="c">
+              <code> 
 ${this.wokwi}
               </code>
               </pre>
@@ -158,6 +158,18 @@ ${this.wokwi}
     static override styles = [    
        onedark,        
         css`
+        .json {
+          background-color: #333
+        }
+
+        pre > code {
+           font-family: "Sans Mono", "Consolas", "Courier", monospace;
+         }
+   
+         .hljs-punctuation {
+          color: #fff;
+         }
+
         nav {
          display: flex;
         }
