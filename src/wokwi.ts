@@ -1,6 +1,7 @@
 import { TemplateResult, html } from 'lit';
 import { VCDParser } from './vcdparser.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { WokwiSignals, WokwiSignal } from './types';
 
 
 function varDecl(varType: string, vars: any) {
@@ -11,7 +12,11 @@ function varDecl(varType: string, vars: any) {
   return varNames;
 }
 
-function wokwi_signals(signals: any, vars: any) {
+function wokwi_signals_string() {
+
+}
+
+function wokwi_signals(signals: WokwiSignals[], vars: any) {
   const out: TemplateResult[] = [];
   signals.forEach(element => {
     const timestamp = element.timestamp;
@@ -31,6 +36,13 @@ function wokwi_signals(signals: any, vars: any) {
   return out;
 }
 
+export function to_wokwi_string(parser: VCDParser) {
+  const signals = parser.resolve_variables();
+  const signals_grouped = parser.transformToTimestamp(signals);
+  const vars = parser.vars.map(element=>element.name);
+}
+
+/*
 export function to_wokwi(parser: VCDParser) {
   const signals = parser.resolve_variables();
   const signals_grouped = parser.transformToTimestamp(signals);
@@ -118,3 +130,4 @@ void chip_init() {
   
   `;
 }
+*/

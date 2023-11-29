@@ -1,7 +1,10 @@
 import { LitElement, css, html, TemplateResult } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import {unsafeHTML} from 'lit/directives/unsafe-html.js';
+import hljs from 'highlight.js';
 import {VCDParser} from './vcdparser.js';
-import {to_wokwi} from './wokwi.js';
+import {to_wokwi_string} from './wokwi.js';
+import { onedark } from './onedark.js';
 
 @customElement('main-element')
 export class MyElement extends LitElement {
@@ -14,6 +17,39 @@ export class MyElement extends LitElement {
     private parsed = '';
     private resolved = '';
     private wokwi:TemplateResult = html``;
+
+    disableTabs() {
+      this.tab1 = false;
+      this.tab2 = false;
+      this.tab3 = false;   
+      this.tab4 = false;
+    }
+  
+    showTab1() {
+      this.disableTabs();
+      this.tab1 = true;
+      this.requestUpdate();
+    }
+  
+    showTab2() {
+      this.disableTabs();
+      this.tab2 = true;
+      this.requestUpdate();
+    }
+  
+    showTab3() {
+
+      this.disableTabs();
+      this.tab3 = true;
+      this.requestUpdate();
+    
+    }
+  
+    showTab4() {
+      this.disableTabs();
+      this.tab4 = true;
+      this.requestUpdate();
+    } 
 
     b64DecodeUnicode(str: any) {
         // Going backwards: from bytestream, to percent-encoding, to original string.
@@ -55,7 +91,11 @@ export class MyElement extends LitElement {
         this.resolved = JSON.stringify(resolved_signals, null, 2);
         //this.wokwi = to_wokwi(parser);
         this.showUpload = false;
-        //Prism.highlightAllUnder(this.shadowRoot!);
+        this.parsed = hljs.highlight(this.parsed, {language:"json"}).value;
+        this.resolved = hljs.highlight(this.resolved, {language: "json"}).value;
+        const wokwi_string = to_wokwi_string(parser);
+
+        //this.wokwi = hljs.highlight(this.wokwi, {language: "json"}).value;
         this.requestUpdate();
         
       }
@@ -69,19 +109,54 @@ export class MyElement extends LitElement {
     render() {
         return html`
           <main>
-            <div id="upload">
-                <div class="upload-btn-wrapper" ?hidden=${!this.showUpload}>
+            <section id="upload" ?hidden=${!this.showUpload}>
+                <div class="upload-btn-wrapper">
                     <button class="btn" ?hidden=${!this.showUpload}>Upload a file</button>
                     <input type="file" @change="${this._file_uploaded}" name="myfile" accept=".vcd" />
-                    </div>
                 </div>
-            <div id="view">
-            </div>
+            </section>
+            <section ?hidden=${this.showUpload}>
+              <nav>
+                <button @click=${this.showTab1}>Original</button>
+                <button @click=${this.showTab2}>Parsed</button>
+                <button @click=${this.showTab3}>Resolved</button>
+                <button @click=${this.showTab4}>To Wokwi</button>
+              </nav>
+            </section>
+            <section ?hidden=${!this.tab1} >
+              <pre>
+              <code> 
+${this.original}
+              </code>
+              </pre>
+            </section>
+            <section ?hidden=${!this.tab2}>
+              <pre>
+              <code class="json"> 
+${unsafeHTML(this.parsed)}
+              </code>
+              </pre>   
+            </section>
+            <section ?hidden=${!this.tab3}>
+              <pre>
+              <code class="json"> 
+${unsafeHTML(this.resolved)}
+              </code>
+              </pre>    
+            </section>
+            <section ?hidden=${!this.tab4}>        
+              <pre>
+              <code class="c"> 
+${this.wokwi}
+              </code>
+              </pre>
+            </section>            
           </main>
         `
     }
 
-    static override styles = [            
+    static override styles = [    
+       onedark,        
         css`
         nav {
          display: flex;
