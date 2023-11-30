@@ -1,6 +1,20 @@
 import { VCDParser } from './vcdparser.js';
-import { WokwiSignals, WokwiSignal, TransformedSignal, TransformedData } from './types';
+import { TransformedData } from './types';
 
+function format(): string { 
+  return [...arguments].reduce((acc, arg, idx) => 
+    acc.replace(new RegExp("\\{" + (idx - 1) + "\\}", "g"), arg));
+}
+
+function formatArray(formatstring: string, arr: string[]) {
+  let out="";
+  arr.forEach(element => {
+    // @ts-ignore: variadic function
+    const boo = format(formatstring, element);
+    out = out.concat(boo);
+  });
+  return out;
+}
 
 function varDecl(varType: string, vars: any) {
   const varNames = [];
@@ -56,11 +70,11 @@ export function to_wokwi(parser: VCDParser): string {
 
   const signals_lit: any = wokwi_signals(signals_grouped, vars);
 
-  const stdio = "#include &lt;stdio.h&gt;";
-  const stdlib = "#include &lt;stdlib.h&gt;";
-
   const varNames = varDecl("pin_t",parser.vars);
   const varNames2 = varDecl("int", parser.vars);
+
+  const chipTimerDecls = formatArray("tristatelevel {0}=current_pulse.{0};\n      ", vars);
+  const chipTimerDef =  formatArray("if ({0} != dontcarelevel ) {  pin_write(chip->{0}, {0});  }\n      ", vars);
 
 const out =  
 `
@@ -88,6 +102,46 @@ const out =
     const pulse pulse_train[] = {
     ${signals_lit}
     };
+
+    const unsigned int NUMBER_OF_PULSES = sizeof(pulse_train)/sizeof(pulse);
+
+    void chip_timer_event(void *user_data) {
+      chip_state_t *chip = (chip_state_t *)user_data;
+      pulse current_pulse = pulse_train[chip->index];
+  
+      unsigned long t = current_pulse.timestamp;
+      
+      ${chipTimerDecls}
+  
+      ${chipTimerDef}
+  
+      unsigned long sim_time = (unsigned long) get_sim_nanos();
+      chip->index = chip->index + 1;
+      if ((chip->index) != NUMBER_OF_PULSES) {
+          unsigned long next_pulse = pulse_train[chip->index].timestamp - t;
+          timer_start_ns(chip->timer, next_pulse, false);
+      }
+  }
+  
+  void chip_init() {
+  
+      chip_state_t *chip = malloc(sizeof(chip_state_t));
+  
+      chip->D0 = pin_init("D0", OUTPUT);
+      chip->D1 = pin_init("D1", OUTPUT);
+      chip->D2 = pin_init("D2", OUTPUT);
+      chip->D3 = pin_init("D3", OUTPUT);
+  
+  
+      timer_config_t timer_config = {
+          .callback = chip_timer_event,
+          .user_data = chip
+      };
+  
+      chip->timer = timer_init(&timer_config);
+      timer_start_ns(chip->timer, 10, false);
+     }
+  
 
 `;
 
