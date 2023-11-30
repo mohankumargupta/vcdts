@@ -5,23 +5,45 @@ import { WokwiSignals, WokwiSignal, TransformedSignal, TransformedData } from '.
 function varDecl(varType: string, vars: any) {
   const varNames = [];
   for (const vcdVar of vars) {
-    varNames.push(`${varType} ${vcdVar.name};\n    `);
+    varNames.push(`${varType} ${vcdVar.name};\n      `);
   }
   return varNames;
 }
 
-function wokwi_signals(signals: any) {
+
+
+
+function wokwi_signals(signals: any, vars:string[]) {
   let out = '';
+  console.log(vars);
   signals.forEach((element: TransformedData ) => {
     const timestamp = element.timestamp;
     let line = `{.timestamp=${timestamp}, `;
+    console.log(element.signals);
+    vars.forEach(varvar  => {
+       const signal_names = element.signals.map(signal=>signal.signal_name);
+       if (signal_names.includes(varvar)) {
+        line = line.concat(`.${varvar}=${element.signals[signal_names.indexOf(varvar)].value}, `) 
+       }
+       else {
+        line = line.concat(`.${varvar}=-1, `)
+       }       
+    });
+    /*
     element.signals.forEach((signal: TransformedSignal ) => {
         const signal_name = signal.signal_name;
         const value = signal.value;
-        console.log(signal);
-        line = line.concat(`.${signal_name}=${value}, `)
+        //console.log(signal);
+        if (vars.index() > -1) {
+          line = line.concat(`.${signal_name}=${value}, `)
+        }
+        else {
+          line = line.concat(`.${signal_name}=-1, `)
+        }
+        
       
-    });    
+    });
+    */    
     out = out.concat(`${line}},\n    `);    
   });
   return out;
@@ -32,7 +54,7 @@ export function to_wokwi(parser: VCDParser): string {
   const signals_grouped = parser.transformToTimestamp(signals);
   const vars = parser.vars.map(element=>element.name);
 
-  const signals_lit: any = wokwi_signals(signals_grouped);
+  const signals_lit: any = wokwi_signals(signals_grouped, vars);
 
   const stdio = "#include &lt;stdio.h&gt;";
   const stdlib = "#include &lt;stdlib.h&gt;";
@@ -45,7 +67,24 @@ const out =
     #include <stdio.h>
     #include <stdlib.h>
     #include "wokwi-api.h"
+
+    typedef struct {
+      int index;
+      timer_t timer;
+      ${varNames.join("")} 
+    } chip_state_t;
   
+    typedef struct {
+      unsigned long timestamp;
+      ${varNames2.join("")}
+    } pulse;
+  
+    typedef enum {
+      dontcarelevel=-1,
+      lowlevel=0,
+      highlevel=1,
+    } tristatelevel;    
+
     const pulse pulse_train[] = {
     ${signals_lit}
     };

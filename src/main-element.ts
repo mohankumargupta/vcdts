@@ -179,15 +179,17 @@ ${unsafeHTML(this.wokwi)}
           background-color: #333
         }
 
+        /*
         code {
           color: #fff;
         }
+        */
 
         pre > code {
            font-family: "Sans Mono", "Consolas", "Courier", monospace;
          }
    
-         .hljs-punctuation {
+         .hljs-punctuation, .hljs-class, .c {
           color: #fff;
          }
 
