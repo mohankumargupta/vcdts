@@ -29,11 +29,9 @@ function varDecl(varType: string, vars: any) {
 
 function wokwi_signals(signals: any, vars:string[]) {
   let out = '';
-  console.log(vars);
   signals.forEach((element: TransformedData ) => {
     const timestamp = element.timestamp;
     let line = `{.timestamp=${timestamp}, `;
-    console.log(element.signals);
     vars.forEach(varvar  => {
        const signal_names = element.signals.map(signal=>signal.signal_name);
        if (signal_names.includes(varvar)) {
@@ -109,36 +107,31 @@ const out =
     void chip_timer_event(void *user_data) {
       chip_state_t *chip = (chip_state_t *)user_data;
       pulse current_pulse = pulse_train[chip->index];
-  
       unsigned long t = current_pulse.timestamp;
       
       ${chipTimerDecls}
-  
       ${chipTimerDef}
-  
       unsigned long sim_time = (unsigned long) get_sim_nanos();
       chip->index = chip->index + 1;
       if ((chip->index) != NUMBER_OF_PULSES) {
           unsigned long next_pulse = pulse_train[chip->index].timestamp - t;
           timer_start_ns(chip->timer, next_pulse, false);
       }
-  }
+    }
   
-  void chip_init() {
-  
+    void chip_init() {
       chip_state_t *chip = malloc(sizeof(chip_state_t));
-     
+      
       ${chipInit}
-  
       timer_config_t timer_config = {
           .callback = chip_timer_event,
           .user_data = chip
       };
-  
+    
       chip->timer = timer_init(&timer_config);
       timer_start_ns(chip->timer, 10, false);
-     }
-  
+    }
+
 
 `;
 
