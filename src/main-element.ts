@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import hljs from 'highlight.js';
 import {VCDParser} from './vcdparser.js';
-import {to_wokwi} from './wokwi.js';
+import {to_wokwi, to_wokwi_chip_json} from './wokwi.js';
 import { onedark } from './onedark.js';
 
 @customElement('main-element')
@@ -20,6 +20,8 @@ export class MyElement extends LitElement {
     private parsedHTML = '';
     private resolvedHTML = '';
     private wokwiHTML = '';
+    private wokwiJSON = '';
+    private wokwichipjson = '';
 
     disableTabs() {
       this.tab1 = false;
@@ -116,6 +118,8 @@ export class MyElement extends LitElement {
         this.resolvedHTML = hljs.highlight(this.resolved, {language: "json"}).value;
         this.wokwi = to_wokwi(parser);
         this.wokwiHTML = hljs.highlight(this.wokwi, {language: "c"}).value;
+        this.wokwichipjson = to_wokwi_chip_json(parser);
+        this.wokwiJSON = hljs.highlight(this.wokwichipjson, {language: "json"}).value;
         this.requestUpdate();
         
       }
@@ -158,6 +162,10 @@ export class MyElement extends LitElement {
 
     }
 
+    copyJSONToClipboard() {
+      this._copyToClipboard(this.wokwichipjson);
+    }
+
     render() {
         return html`
           <main>
@@ -198,13 +206,25 @@ ${unsafeHTML(this.resolvedHTML)}
               </code>
               </pre>    
             </section>
-            <section ?hidden=${!this.tab4}>        
+            <section ?hidden=${!this.tab4}>   
+              <div>
+                <h1>custom.chip.c</h1>
+              </div>                  
               <pre  class="c">
               <button class="clipboard" style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>  
               <code> 
 ${unsafeHTML(this.wokwiHTML)}
               </code>
               </pre>
+              <div>
+              <h1>custom.chip.json</h1>
+              </div> 
+              <pre  class="json">
+              <button class="clipboard" style="float:right;cursor:pointer;"  @click="${this.copyJSONToClipboard}">Copy To Clipboard</button>  
+              <code> 
+${unsafeHTML(this.wokwiJSON)}
+              </code>
+              </pre>              
             </section>            
           </main>
         `
@@ -227,7 +247,7 @@ ${unsafeHTML(this.wokwiHTML)}
            font-family: "Sans Mono", "Consolas", "Courier", monospace;
          }
    
-         .hljs-punctuation, .hljs-class, .c {
+         .hljs-punctuation, .hljs-class, .c, .json {
           color: #fff;
          }
 
