@@ -75,6 +75,7 @@ export function to_wokwi(parser: VCDParser): string {
 
   const chipTimerDecls = formatArray("tristatelevel {0}=current_pulse.{0};\n      ", vars);
   const chipTimerDef =  formatArray("if ({0} != dontcarelevel ) {  pin_write(chip->{0}, {0});  }\n      ", vars);
+  const chipInit = formatArray("chip->{0} = pin_init(\"{0}\", OUTPUT);\n      ", vars);
 
 const out =  
 `
@@ -126,12 +127,8 @@ const out =
   void chip_init() {
   
       chip_state_t *chip = malloc(sizeof(chip_state_t));
-  
-      chip->D0 = pin_init("D0", OUTPUT);
-      chip->D1 = pin_init("D1", OUTPUT);
-      chip->D2 = pin_init("D2", OUTPUT);
-      chip->D3 = pin_init("D3", OUTPUT);
-  
+     
+      ${chipInit}
   
       timer_config_t timer_config = {
           .callback = chip_timer_event,
