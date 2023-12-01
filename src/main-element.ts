@@ -127,11 +127,19 @@ export class MyElement extends LitElement {
     }
 
     _copyToClipboard(code: string) {
-    //  if (!navigator.userAgent.toLowerCase().includes('safari')) {
-        navigator.clipboard.writeText(code);
-    //} else {
-        //prompt("Clipboard (Select: ⌘+a > Copy:⌘+c)", code);
-    //}      
+      navigator.clipboard.writeText(code);
+      this.shadowRoot?.querySelectorAll(".clipboard").forEach(element => {
+        element.innerHTML = "Copied!";
+      });
+      //this.innerText = 'Copied!';
+      //button = this;
+      const that = this;
+      setTimeout(function () {
+        that.shadowRoot?.querySelectorAll(".clipboard").forEach(element => {
+          element.innerHTML = "Copy To Clipboard";
+        });
+      }, 2000);
+     
     }
 
     copyToClipboard() {
@@ -176,7 +184,7 @@ ${this.original}
             </section>
             <section ?hidden=${!this.tab2}>
               <pre class="json">
-              <button style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>
+              <button class="clipboard" style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>
               <code> 
 ${unsafeHTML(this.parsedHTML)}
               </code>
@@ -184,7 +192,7 @@ ${unsafeHTML(this.parsedHTML)}
             </section>
             <section ?hidden=${!this.tab3}>
               <pre class="json">
-              <button style="float:right;cursor:pointer;" @click="${this.copyToClipboard}">Copy To Clipboard</button>  
+              <button class="clipboard" style="float:right;cursor:pointer;" @click="${this.copyToClipboard}">Copy To Clipboard</button>  
               <code> 
 ${unsafeHTML(this.resolvedHTML)}
               </code>
@@ -192,7 +200,7 @@ ${unsafeHTML(this.resolvedHTML)}
             </section>
             <section ?hidden=${!this.tab4}>        
               <pre  class="c">
-              <button style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>  
+              <button class="clipboard" style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>  
               <code> 
 ${unsafeHTML(this.wokwiHTML)}
               </code>
