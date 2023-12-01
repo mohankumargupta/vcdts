@@ -1,4 +1,4 @@
-import { LitElement, css, html, TemplateResult } from 'lit'
+import { LitElement, css, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import hljs from 'highlight.js';
@@ -17,6 +17,9 @@ export class MyElement extends LitElement {
     private parsed = '';
     private resolved = '';
     private wokwi = '';
+    private parsedHTML = '';
+    private resolvedHTML = '';
+    private wokwiHTML = '';
 
     disableTabs() {
       this.tab1 = false;
@@ -109,10 +112,10 @@ export class MyElement extends LitElement {
         this.resolved = JSON.stringify(resolved_signals, null, 2);
         //this.wokwi = to_wokwi(parser);
         this.showUpload = false;
-        this.parsed = hljs.highlight(this.parsed, {language:"json"}).value;
-        this.resolved = hljs.highlight(this.resolved, {language: "json"}).value;
+        this.parsedHTML = hljs.highlight(this.parsed, {language:"json"}).value;
+        this.resolvedHTML = hljs.highlight(this.resolved, {language: "json"}).value;
         this.wokwi = to_wokwi(parser);
-        this.wokwi = hljs.highlight(this.wokwi, {language: "c"}).value;
+        this.wokwiHTML = hljs.highlight(this.wokwi, {language: "c"}).value;
         this.requestUpdate();
         
       }
@@ -121,6 +124,30 @@ export class MyElement extends LitElement {
       if (selectedFile) {
         reader.readAsDataURL(selectedFile);
       }
+    }
+
+    _copyToClipboard(code: string) {
+    //  if (!navigator.userAgent.toLowerCase().includes('safari')) {
+        navigator.clipboard.writeText(code);
+    //} else {
+        //prompt("Clipboard (Select: ⌘+a > Copy:⌘+c)", code);
+    //}      
+    }
+
+    copyToClipboard() {
+      console.log("copied!");
+      if (this.tab2) {
+        this._copyToClipboard(this.parsed);
+      }
+
+      if (this.tab3) {
+        this._copyToClipboard(this.resolved);
+      }
+
+      if (this.tab4) {
+        this._copyToClipboard(this.wokwi);
+      }
+
     }
 
     render() {
@@ -149,22 +176,25 @@ ${this.original}
             </section>
             <section ?hidden=${!this.tab2}>
               <pre class="json">
+              <button style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>
               <code> 
-${unsafeHTML(this.parsed)}
+${unsafeHTML(this.parsedHTML)}
               </code>
               </pre>   
             </section>
             <section ?hidden=${!this.tab3}>
               <pre class="json">
+              <button style="float:right;cursor:pointer;" @click="${this.copyToClipboard}">Copy To Clipboard</button>  
               <code> 
-${unsafeHTML(this.resolved)}
+${unsafeHTML(this.resolvedHTML)}
               </code>
               </pre>    
             </section>
             <section ?hidden=${!this.tab4}>        
               <pre  class="c">
+              <button style="float:right;cursor:pointer;"  @click="${this.copyToClipboard}">Copy To Clipboard</button>  
               <code> 
-${unsafeHTML(this.wokwi)}
+${unsafeHTML(this.wokwiHTML)}
               </code>
               </pre>
             </section>            
