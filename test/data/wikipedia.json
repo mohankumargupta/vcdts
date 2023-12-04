@@ -1,0 +1,29 @@
+{
+  "header": {
+    "comment": "Any comment text.",
+    "date": "Date text. For example: November 11, 2009.",
+    "scope": "",
+    "timescale": "1ps",
+    "version": "VCD generator tool version info text."
+  },
+  "data": [
+    {"timestamp": 0, "identifier_code": "#", "value": "xxxxxxxx"},
+    {"timestamp": 0, "identifier_code": "$", "value": "x"},
+    {"timestamp": 0, "identifier_code": "%", "value": "0"},
+    {"timestamp": 0, "identifier_code": "&", "value": "x"},
+    {"timestamp": 0, "identifier_code": "'", "value": "x"},
+    {"timestamp": 0, "identifier_code": "(", "value": "1"},
+    {"timestamp": 0, "identifier_code": ")", "value": "0"},
+    {"timestamp": 0, "identifier_code": "#", "value": "10000001"},
+    {"timestamp": 0, "identifier_code": "$", "value": "0"},
+    {"timestamp": 0, "identifier_code": "%", "value": "1"},
+    {"timestamp": 0, "identifier_code": "&", "value": "0"},
+    {"timestamp": 0, "identifier_code": "'", "value": "1"},
+    {"timestamp": 0, "identifier_code": "(", "value": "0"},
+    {"timestamp": 0, "identifier_code": ")", "value": "0"},
+    {"timestamp": 2211, "identifier_code": "'", "value": "0"},
+    {"timestamp": 2296, "identifier_code": "#", "value": "0"},
+    {"timestamp": 2296, "identifier_code": "$", "value": "1"},
+    {"timestamp": 2302, "identifier_code": "$", "value": "0"}
+  ]
+}
