@@ -55,11 +55,12 @@ const allTestsPrepared = allTests.map((item) => [
 //console.log(allTestsPrepared);
 
 describe('VCD stress tests', () => {
+  //@ts-ignore
   describe.each(allTestsPrepared)('Testing %s', (filename, input, output) => {
     it(`Parsing ${filename}.vcd should not fail`, () => {
       const parser = new VCDParser();
       const parsed = parser.parse(input);
-      console.log('all good');
+      //console.log('all good');
     });
     if (output) {
       it(`Checking if expected output agrees with input`, () => {

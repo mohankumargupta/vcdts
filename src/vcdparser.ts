@@ -400,7 +400,7 @@ export class VCDParser {
   }
 
   public parse(vcd: string) {
-    console.log(vcd);
+    //console.log(vcd);
     const tokeniser = this.tokenise_vcd(vcd)();
 
     this.parse_header(tokeniser);
