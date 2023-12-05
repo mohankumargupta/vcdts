@@ -1,0 +1,105 @@
+{
+    "header": {
+      "comment": "Any comment text.",
+      "date": "Date text. For example: November 11, 2009.",
+      "timescale": "1ps",
+      "version": "VCD generator tool version info text.",
+      "scopes": [
+        {
+          "name": "logic",
+          "type": "module"
+        }
+      ],
+      "vars": [
+        {
+          "name": "data_valid",
+          "type": "wire",
+          "size": 1,
+          "path": "logic",
+          "code": "$"
+        },
+        {
+          "name": "en",
+          "type": "wire",
+          "size": 1,
+          "path": "logic",
+          "code": "%"
+        },
+        {
+          "name": "rx_en",
+          "type": "wire",
+          "size": 1,
+          "path": "logic",
+          "code": "&"
+        },
+        {
+          "name": "tx_en",
+          "type": "wire",
+          "size": 1,
+          "path": "logic",
+          "code": "'"
+        },
+        {
+          "name": "empty",
+          "type": "wire",
+          "size": 1,
+          "path": "logic",
+          "code": "("
+        },
+        {
+          "name": "underrun",
+          "type": "wire",
+          "size": 1,
+          "path": "logic",
+          "code": ")"
+        }
+      ]
+    },
+    "data": [
+      {
+        "timestamp": 0,
+        "identifier_code": "$",
+        "value": "0"
+      },
+      {
+        "timestamp": 0,
+        "identifier_code": "%",
+        "value": "1"
+      },
+      {
+        "timestamp": 0,
+        "identifier_code": "&",
+        "value": "0"
+      },
+      {
+        "timestamp": 0,
+        "identifier_code": "'",
+        "value": "1"
+      },
+      {
+        "timestamp": 0,
+        "identifier_code": "(",
+        "value": "0"
+      },
+      {
+        "timestamp": 0,
+        "identifier_code": ")",
+        "value": "0"
+      },
+      {
+        "timestamp": 2211,
+        "identifier_code": "'",
+        "value": "0"
+      },
+      {
+        "timestamp": 2296,
+        "identifier_code": "$",
+        "value": "1"
+      },
+      {
+        "timestamp": 2302,
+        "identifier_code": "$",
+        "value": "0"
+      }
+    ]
+  }

@@ -66,7 +66,7 @@
     {
       "timestamp": 0,
       "identifier_code": "#",
-      "value": "xxxxxxxx"
+      "value": "bxxxxxxxx"
     },
     {
       "timestamp": 0,
@@ -101,7 +101,7 @@
     {
       "timestamp": 0,
       "identifier_code": "#",
-      "value": "10000001"
+      "value": "b10000001"
     },
     {
       "timestamp": 0,
@@ -141,7 +141,7 @@
     {
       "timestamp": 2296,
       "identifier_code": "#",
-      "value": "0"
+      "value": "b0"
     },
     {
       "timestamp": 2296,

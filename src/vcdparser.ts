@@ -247,7 +247,7 @@ export class VCDParser {
       },
       {
         name: 'vector',
-        pattern: /^[br](\S+)\s+(.+)/,
+        pattern: /^([br]\S+)\s+(.+)/,
         action: (matches: RegExpMatchArray, timestamp: number) => {
           const identifier_code = matches[2];
           const value = matches[1];
