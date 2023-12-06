@@ -1,0 +1,21 @@
+$date Wed Dec 06 15:39:53 2023 $end
+$version libsigrok 0.6.0-git-5f50d6d $end
+$comment
+  Acquisition with 6/6 channels at 1 THz
+$end
+$timescale 1 ns $end
+$scope module libsigrok $end
+$var wire 1 ! logic.data_valid $end
+$var wire 1 " logic.en $end
+$var wire 1 # logic.rx_en $end
+$var wire 1 $ logic.tx_en $end
+$var wire 1 % logic.empty $end
+$var wire 1 & logic.underrun $end
+$upscope $end
+$enddefinitions $end
+
+#0  0! 1" 0# 1$ 0% 0&
+#2211  0$
+#2296  1!
+#2302  0!
+#2303

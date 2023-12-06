@@ -88,7 +88,7 @@ const out =
     } chip_state_t;
   
     typedef struct {
-      unsigned long timestamp;
+      uint64_t timestamp;
       ${varNames2.join("")}
     } pulse;
   
@@ -107,14 +107,14 @@ const out =
     void chip_timer_event(void *user_data) {
       chip_state_t *chip = (chip_state_t *)user_data;
       pulse current_pulse = pulse_train[chip->index];
-      unsigned long t = current_pulse.timestamp;
+      unsigned long long t = current_pulse.timestamp;
       
       ${chipTimerDecls}
       ${chipTimerDef}
-      unsigned long sim_time = (unsigned long) get_sim_nanos();
+      uint64_t sim_time = (unsigned long) get_sim_nanos();
       chip->index = chip->index + 1;
       if ((chip->index) != NUMBER_OF_PULSES) {
-          unsigned long next_pulse = pulse_train[chip->index].timestamp - t;
+          uint64_t next_pulse = pulse_train[chip->index].timestamp - t;
           timer_start_ns(chip->timer, next_pulse, false);
       }
     }
