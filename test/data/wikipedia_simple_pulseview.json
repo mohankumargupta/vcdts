@@ -87,17 +87,17 @@
       "value": "0"
     },
     {
-      "timestamp": 0,
+      "timestamp": 2211,
       "identifier_code": "$",
       "value": "0"
     },
     {
-      "timestamp": 2211,
+      "timestamp": 2296,
       "identifier_code": "!",
       "value": "1"
     },
     {
-      "timestamp": 2296,
+      "timestamp": 2302,
       "identifier_code": "!",
       "value": "0"
     }

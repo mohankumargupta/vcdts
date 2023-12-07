@@ -248,15 +248,11 @@ export class VCDParser {
               const value = item[1];
               const identifier = item[2];
               this.signal_data.push({
-                timestamp: timestamp,
+                timestamp: newtimestamp,
                 identifier_code: identifier,
                 value: value,
               });
-            })
-            if (new_matches){
-              //this.parse_scalar(new_matches, newtimestamp);  
-            }
-            
+            });
           }
           //console.log(newtimestamp);
           return newtimestamp;
