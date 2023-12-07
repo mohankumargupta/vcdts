@@ -241,7 +241,7 @@ export class VCDParser {
           const newtimestamp = Number(matches[1]);
           if (matches.length == 4) {
             const changed_values = matches[2];
-            const possible_regex = /^(\d[!#$])\s*((?:\d[!#$]\s*)*)$/;
+            //const possible_regex = /^(\d[!#$])\s*((?:\d[!#$]\s*)*)$/;
             const regex2 = /(\d)(.)/g;
             const new_matches = [...changed_values.matchAll(regex2)];
             new_matches.forEach((item) => {

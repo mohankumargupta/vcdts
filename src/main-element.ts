@@ -13,21 +13,26 @@ export class MyElement extends LitElement {
     private tab2 = false; 
     private tab3 = false;
     private tab4 = false;
+    private tab5 = false;
     private original = '';
     private parsed = '';
     private resolved = '';
+    private resolved_grouped = '';
+    private resolvedGroupedHTML = '';
     private wokwi = '';
     private parsedHTML = '';
     private resolvedHTML = '';
     private wokwiHTML = '';
     private wokwiJSON = '';
     private wokwichipjson = '';
+    
 
     disableTabs() {
       this.tab1 = false;
       this.tab2 = false;
       this.tab3 = false;   
       this.tab4 = false;
+      this.tab5 = false;
     }
   
     showTab1() {
@@ -53,6 +58,12 @@ export class MyElement extends LitElement {
     showTab4() {
       this.disableTabs();
       this.tab4 = true;
+      this.requestUpdate();
+    } 
+
+    showTab5() {
+      this.disableTabs();
+      this.tab5 = true;
       this.requestUpdate();
     } 
 
@@ -108,14 +119,16 @@ export class MyElement extends LitElement {
         console.log('Parsed VCD with variable resolution');
         const resolved_signals = parser.resolve_variables();
         console.log(resolved_signals);
+        this.resolved = JSON.stringify(resolved_signals, null, 2);
         console.log('signal data grouped by timestamp');
         const signals_grouped = parser.transformToTimestamp(resolved_signals);
         console.log(signals_grouped);
-        this.resolved = JSON.stringify(resolved_signals, null, 2);
+        this.resolved_grouped = JSON.stringify(signals_grouped, null, 2);
         //this.wokwi = to_wokwi(parser);
         this.showUpload = false;
         this.parsedHTML = hljs.highlight(this.parsed, {language:"json"}).value;
         this.resolvedHTML = hljs.highlight(this.resolved, {language: "json"}).value;
+        this.resolvedGroupedHTML = hljs.highlight(this.resolved_grouped, {language: "json"}).value;
         this.wokwi = to_wokwi(parser);
         this.wokwiHTML = hljs.highlight(this.wokwi, {language: "c"}).value;
         this.wokwichipjson = to_wokwi_chip_json(parser);
@@ -157,6 +170,10 @@ export class MyElement extends LitElement {
       }
 
       if (this.tab4) {
+        this._copyToClipboard(this.resolved_grouped);
+      }
+
+      if (this.tab5) {
         this._copyToClipboard(this.wokwi);
       }
 
@@ -180,7 +197,8 @@ export class MyElement extends LitElement {
                 <button @click=${this.showTab1}>Original</button>
                 <button @click=${this.showTab2}>Parsed</button>
                 <button @click=${this.showTab3}>Resolved</button>
-                <button @click=${this.showTab4}>To Wokwi</button>
+                <button @click=${this.showTab4}>Resolved2</button>
+                <button @click=${this.showTab5}>To Wokwi</button>
               </nav>
             </section>
             <section ?hidden=${!this.tab1} >
@@ -206,7 +224,15 @@ ${unsafeHTML(this.resolvedHTML)}
               </code>
               </pre>    
             </section>
-            <section ?hidden=${!this.tab4}>   
+            <section ?hidden=${!this.tab4}>
+              <pre class="json">
+              <button class="clipboard" style="float:right;cursor:pointer;" @click="${this.copyToClipboard}">Copy To Clipboard</button>  
+              <code> 
+${unsafeHTML(this.resolvedGroupedHTML)}
+              </code>
+              </pre>    
+            </section>            
+            <section ?hidden=${!this.tab5}>   
               <div>
                 <h1>custom.chip.c</h1>
               </div>                  
