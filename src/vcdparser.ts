@@ -219,14 +219,45 @@ export class VCDParser {
     };
   }
 
+  parse_scalar(matches: RegExpMatchArray, timestamp: number): number {
+    const identifier_code = matches[2];
+    const value = matches[1];
+    this.signal_data.push({
+      timestamp: timestamp,
+      identifier_code: identifier_code,
+      value: value,
+    });
+    return timestamp;
+  }
+
   parse_signal_data(_lineNumber: number, tokeniser: Tokeniser, token: string) {
     const regexPatterns = [
       {
         name: 'time',
-        pattern: /^#(\d+)/,
+        //pattern: /^#(\d+)/,
+        pattern: /^#(\d+)\s*((\d.\s*)*)$/,
         action: (matches: RegExpMatchArray, _timestamp: number): number => {
           //timestamp = Number(matches[1]);
           const newtimestamp = Number(matches[1]);
+          if (matches.length == 4) {
+            const changed_values = matches[2];
+            const possible_regex = /^(\d[!#$])\s*((?:\d[!#$]\s*)*)$/;
+            const regex2 = /(\d)(.)/g;
+            const new_matches = [...changed_values.matchAll(regex2)];
+            new_matches.forEach((item) => {
+              const value = item[1];
+              const identifier = item[2];
+              this.signal_data.push({
+                timestamp: timestamp,
+                identifier_code: identifier,
+                value: value,
+              });
+            })
+            if (new_matches){
+              //this.parse_scalar(new_matches, newtimestamp);  
+            }
+            
+          }
           //console.log(newtimestamp);
           return newtimestamp;
         },

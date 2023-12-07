@@ -1,0 +1,105 @@
+{
+  "header": {
+    "comment": "Acquisition with 6/6 channels at 1 THz",
+    "date": "Wed Dec 06 15:39:53 2023",
+    "timescale": "1 ns",
+    "version": "libsigrok 0.6.0-git-5f50d6d",
+    "scopes": [
+      {
+        "name": "libsigrok",
+        "type": "module"
+      }
+    ],
+    "vars": [
+      {
+        "name": "logic.data_valid",
+        "type": "wire",
+        "size": 1,
+        "path": "libsigrok",
+        "code": "!"
+      },
+      {
+        "name": "logic.en",
+        "type": "wire",
+        "size": 1,
+        "path": "libsigrok",
+        "code": "\""
+      },
+      {
+        "name": "logic.rx_en",
+        "type": "wire",
+        "size": 1,
+        "path": "libsigrok",
+        "code": "#"
+      },
+      {
+        "name": "logic.tx_en",
+        "type": "wire",
+        "size": 1,
+        "path": "libsigrok",
+        "code": "$"
+      },
+      {
+        "name": "logic.empty",
+        "type": "wire",
+        "size": 1,
+        "path": "libsigrok",
+        "code": "%"
+      },
+      {
+        "name": "logic.underrun",
+        "type": "wire",
+        "size": 1,
+        "path": "libsigrok",
+        "code": "&"
+      }
+    ]
+  },
+  "data": [
+    {
+      "timestamp": 0,
+      "identifier_code": "!",
+      "value": "0"
+    },
+    {
+      "timestamp": 0,
+      "identifier_code": "\"",
+      "value": "1"
+    },
+    {
+      "timestamp": 0,
+      "identifier_code": "#",
+      "value": "0"
+    },
+    {
+      "timestamp": 0,
+      "identifier_code": "$",
+      "value": "1"
+    },
+    {
+      "timestamp": 0,
+      "identifier_code": "%",
+      "value": "0"
+    },
+    {
+      "timestamp": 0,
+      "identifier_code": "&",
+      "value": "0"
+    },
+    {
+      "timestamp": 0,
+      "identifier_code": "$",
+      "value": "0"
+    },
+    {
+      "timestamp": 2211,
+      "identifier_code": "!",
+      "value": "1"
+    },
+    {
+      "timestamp": 2296,
+      "identifier_code": "!",
+      "value": "0"
+    }
+  ]
+}
