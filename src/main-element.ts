@@ -97,6 +97,38 @@ export class MyElement extends LitElement {
         );
       }
 
+    read_vcd(contents: string) {
+      const parser = new VCDParser();
+      const digestible_vcd = parser.parse(contents);
+      this.original = contents;
+      console.log('Parsed VCD');
+      console.log('----------------------');
+      console.log(digestible_vcd);
+      console.log('JSON VCD');
+      console.log('----------------------');
+      console.log(JSON.stringify(digestible_vcd));
+      this.parsed = JSON.stringify(digestible_vcd,  null, 2);
+      console.log('Parsed VCD with variable resolution');
+      const resolved_signals = parser.resolve_variables();
+      console.log(resolved_signals);
+      this.resolved = JSON.stringify(resolved_signals, null, 2);
+      console.log('signal data grouped by timestamp');
+      const signals_grouped = parser.transformToTimestamp(resolved_signals);
+      console.log(signals_grouped);
+      this.resolved_grouped = JSON.stringify(signals_grouped, null, 2);
+      //this.wokwi = to_wokwi(parser);
+      this.showUpload = false;
+      this.parsedHTML = hljs.highlight(this.parsed, {language:"json"}).value;
+      this.resolvedHTML = hljs.highlight(this.resolved, {language: "json"}).value;
+      this.resolvedGroupedHTML = hljs.highlight(this.resolved_grouped, {language: "json"}).value;
+      this.wokwi = to_wokwi(parser);
+      this.wokwiHTML = hljs.highlight(this.wokwi, {language: "c"}).value;
+      this.wokwichipjson = to_wokwi_chip_json(parser);
+      this.wokwiJSON = hljs.highlight(this.wokwichipjson, {language: "json"}).value;
+      this.requestUpdate();
+    }
+
+
     _file_uploaded(_ee: Event) {
         const selectedFile = this.renderRoot.querySelector('input')?.files?.item(0);
         
@@ -106,35 +138,7 @@ export class MyElement extends LitElement {
         const base64 = (e.target.result as String).split(',').pop();
         const contents = this.b64DecodeUnicode(base64);
         //console.log(this.b64DecodeUnicode(base64));
-        const parser = new VCDParser();
-        const digestible_vcd = parser.parse(contents);
-        this.original = contents;
-        console.log('Parsed VCD');
-        console.log('----------------------');
-        console.log(digestible_vcd);
-        console.log('JSON VCD');
-        console.log('----------------------');
-        console.log(JSON.stringify(digestible_vcd));
-        this.parsed = JSON.stringify(digestible_vcd,  null, 2);
-        console.log('Parsed VCD with variable resolution');
-        const resolved_signals = parser.resolve_variables();
-        console.log(resolved_signals);
-        this.resolved = JSON.stringify(resolved_signals, null, 2);
-        console.log('signal data grouped by timestamp');
-        const signals_grouped = parser.transformToTimestamp(resolved_signals);
-        console.log(signals_grouped);
-        this.resolved_grouped = JSON.stringify(signals_grouped, null, 2);
-        //this.wokwi = to_wokwi(parser);
-        this.showUpload = false;
-        this.parsedHTML = hljs.highlight(this.parsed, {language:"json"}).value;
-        this.resolvedHTML = hljs.highlight(this.resolved, {language: "json"}).value;
-        this.resolvedGroupedHTML = hljs.highlight(this.resolved_grouped, {language: "json"}).value;
-        this.wokwi = to_wokwi(parser);
-        this.wokwiHTML = hljs.highlight(this.wokwi, {language: "c"}).value;
-        this.wokwichipjson = to_wokwi_chip_json(parser);
-        this.wokwiJSON = hljs.highlight(this.wokwichipjson, {language: "json"}).value;
-        this.requestUpdate();
-        
+        this.read_vcd(contents);
       }
       };
 
@@ -183,13 +187,41 @@ export class MyElement extends LitElement {
       this._copyToClipboard(this.wokwichipjson);
     }
 
+    example1(e: CustomEvent) {
+     e.preventDefault();
+
+     const wikipedia_vcd = `JGRhdGUKICAgRGF0ZSB0ZXh0LiBGb3IgZXhhbXBsZTogTm92ZW1iZXIgMTEsIDIwMDkuCiRlbmQKJHZlcnNpb24KICAgVkNEIGdlbmVyYXRvciB0b29sIHZlcnNpb24gaW5mbyB0ZXh0LgokZW5kCiRjb21tZW50CiAgIEFueSBjb21tZW50IHRleHQuCiRlbmQKJHRpbWVzY2FsZSAxcHMgJGVuZAokc2NvcGUgbW9kdWxlIGxvZ2ljICRlbmQKJHZhciB3aXJlIDggIyBkYXRhICRlbmQKJHZhciB3aXJlIDEgJCBkYXRhX3ZhbGlkICRlbmQKJHZhciB3aXJlIDEgJSBlbiAkZW5kCiR2YXIgd2lyZSAxICYgcnhfZW4gJGVuZAokdmFyIHdpcmUgMSAnIHR4X2VuICRlbmQKJHZhciB3aXJlIDEgKCBlbXB0eSAkZW5kCiR2YXIgd2lyZSAxICkgdW5kZXJydW4gJGVuZAokdXBzY29wZSAkZW5kCiRlbmRkZWZpbml0aW9ucyAkZW5kCiRkdW1wdmFycwpieHh4eHh4eHggIwp4JAowJQp4Jgp4JwoxKAowKQokZW5kCiMwCmIxMDAwMDAwMSAjCjAkCjElCjAmCjEnCjAoCjApCiMyMjExCjAnCiMyMjk2CmIwICMKMSQKIzIzMDIKMCQKIzIzMDM=`; 
+     const contents = this.b64DecodeUnicode(wikipedia_vcd);
+     this.read_vcd(contents);
+
+     this.showUpload = false;
+     this.requestUpdate();
+    }
+
+    example2(e: CustomEvent) {
+      e.preventDefault();
+      
+      const wikipedia_modified = `JGRhdGUKICAgRGF0ZSB0ZXh0LiBGb3IgZXhhbXBsZTogTm92ZW1iZXIgMTEsIDIwMDkuCiRlbmQKJHZlcnNpb24KICAgVkNEIGdlbmVyYXRvciB0b29sIHZlcnNpb24gaW5mbyB0ZXh0LgokZW5kCiRjb21tZW50CiAgIEFueSBjb21tZW50IHRleHQuCiRlbmQKJHRpbWVzY2FsZSAxcHMgJGVuZAokc2NvcGUgbW9kdWxlIGxvZ2ljICRlbmQKJHZhciB3aXJlIDEgJCBkYXRhX3ZhbGlkICRlbmQKJHZhciB3aXJlIDEgJSBlbiAkZW5kCiR2YXIgd2lyZSAxICYgcnhfZW4gJGVuZAokdmFyIHdpcmUgMSAnIHR4X2VuICRlbmQKJHZhciB3aXJlIDEgKCBlbXB0eSAkZW5kCiR2YXIgd2lyZSAxICkgdW5kZXJydW4gJGVuZAokdXBzY29wZSAkZW5kCiRlbmRkZWZpbml0aW9ucyAkZW5kCiMwCjAkCjElCjAmCjEnCjAoCjApCiMyMjExCjAnCiMyMjk2CjEkCiMyMzAyCjAkCiMyMzAz`;
+      const contents = this.b64DecodeUnicode(wikipedia_modified);
+      this.read_vcd(contents);
+      
+     this.showUpload = false;
+     this.requestUpdate();
+    }
+
     render() {
         return html`
           <main>
             <section id="upload" ?hidden=${!this.showUpload}>
                 <div class="upload-btn-wrapper">
-                    <button class="btn" ?hidden=${!this.showUpload}>Upload a file</button>
+                    <button class="btn" ?hidden=${!this.showUpload}>Upload .vcd file</button>
                     <input type="file" @change="${this._file_uploaded}" name="myfile" accept=".vcd" />
+                </div>
+                <div>
+                  <ul class="examples">
+                  <li><a href="" @click=${this.example1}>Example 1: wikipedia.vcd</a></li>
+                  <li><a href="" @click=${this.example2}>Example 2: wikipedia_modified.vcd</a></li>
+                  </ul>
                 </div>
             </section>
             <section ?hidden=${this.showUpload}>
@@ -303,7 +335,17 @@ ${unsafeHTML(this.wokwiJSON)}
            left: 0;
            top: 0;
            opacity: 0;
-         }`
+         }
+         
+         .examples li {
+          padding-top: 5px;
+          padding-bottom: 5px;
+          
+         }
+
+         a:visited { color: blue; }
+         
+         `
        ];    
 
 
