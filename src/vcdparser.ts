@@ -1,41 +1,4 @@
-/*
-interface MyObject {
-    [key: string]: any;
-}
-
-function setAttribute(obj: MyObject, key: string, value: any) {
-    obj[key] = value;
-}
-
-
-
-const myObj: MyObject = {};
-setAttribute(myObj, "name", "John");
-setAttribute(myObj, "age", 30);
-
-console.log(myObj); // { name: 'John', age: 30 }
-
-*/
-
 import {sort} from './sort';
-/*
-type KeywordsWithKnownNumberOfArgs =
-  | '$scope'
-  | '$timescale'
-  | '$upscope'
-  | '$dumpall'
-  | '$dumpoff'
-  | '$dumpon'
-  | '$dumpvars'
-  | '$end';
-
-type VariableLengthKeywords = '$var';
-type KeywordsWithStringAsArgument = '$comment' | '$version' | '$date';
-type AllKeywords =
-  | KeywordsWithKnownNumberOfArgs
-  | VariableLengthKeywords
-  | KeywordsWithStringAsArgument;
-*/
 
 type Tokeniser = Generator<{lineNumber: number; word: string}, void, unknown>;
 
@@ -54,19 +17,21 @@ interface Scope {
   type: ScopeType;
 }
 
+/*
 interface Var {
   name: string;
   type: string;
   size: number;
   code: string;
 }
+*/
 
 interface FourStateVCDFile {
   comment: string;
   date: string;
   scope: Scope[];
   timescale: string;
-  vars: Var[];
+  vars: VCDVar[];
   version: string;
 }
 
@@ -87,27 +52,6 @@ interface TransformedData {
   signals: TransformedSignal[];
 }
 
-/*
-interface HeaderWithStringArguments {
-  comment: string;
-  date: string;
-  scope: string;
-  timescale: string;
-  version: string;
-  [key: string]: string;
-}
-
-interface VCDDocument {
-  header: Header;
-  data: SignalData[];
-}
-*/
-//interface HeaderVars {
-//  vars: Array<VCDVar>;
-//}
-
-//interface Header extends HeaderWithStringArguments, HeaderVars {}
-
 interface SignalData {
   timestamp: number;
   identifier_code: string;
@@ -116,21 +60,10 @@ interface SignalData {
 
 interface ResolvedSignalData {
   timestamp: number;
+  scopes: string[],
   signal_name: string;
   value: string;
 }
-
-/*
-interface Tokens {
-  lineNumber: number;
-  tokens: string[];
-}
-
-type TokenRequest = {
-  isHeader: boolean;
-  tokenCount: number;
-};
-*/
 
 export class VCDParser {
   enddefinitions: boolean;
@@ -219,6 +152,7 @@ export class VCDParser {
     };
   }
 
+  /*
   parse_scalar(matches: RegExpMatchArray, timestamp: number): number {
     const identifier_code = matches[2];
     const value = matches[1];
@@ -228,6 +162,14 @@ export class VCDParser {
       value: value,
     });
     return timestamp;
+  }
+  */
+
+  get_scope(identifier: string): string {
+    this.vars.forEach(vcdvar => {
+      console.log(vcdvar);
+    });
+    return "";
   }
 
   parse_signal_data(_lineNumber: number, tokeniser: Tokeniser, token: string) {
@@ -247,8 +189,10 @@ export class VCDParser {
             new_matches.forEach((item) => {
               const value = item[1];
               const identifier = item[2];
+              //const path = this.get_scope(identifier);
               this.signal_data.push({
                 timestamp: newtimestamp,
+                
                 identifier_code: identifier,
                 value: value,
               });
@@ -264,8 +208,10 @@ export class VCDParser {
         action: (matches: RegExpMatchArray, timestamp: number): number => {
           const identifier_code = matches[2];
           const value = matches[1];
+          //const path = this.get_scope(identifier_code);
           this.signal_data.push({
             timestamp: timestamp,
+            
             identifier_code: identifier_code,
             value: value,
           });
@@ -278,8 +224,10 @@ export class VCDParser {
         action: (matches: RegExpMatchArray, timestamp: number) => {
           const identifier_code = matches[2];
           const value = matches[1];
+          //const path = this.get_scope(identifier_code);
           this.signal_data.push({
             timestamp: timestamp,
+            
             identifier_code: identifier_code,
             value: value,
           });
@@ -441,10 +389,13 @@ export class VCDParser {
     for (const variable of this.vars) {
       const name = variable.name;
       const identifier_code = variable.code;
+      const path = variable.path;
+      const scopes = path.split(".");
       for (const signal of this.signal_data) {
         if (signal.identifier_code === identifier_code) {
           signal_data.push({
             timestamp: signal.timestamp,
+            scopes: scopes,
             signal_name: name,
             value: signal.value,
           });
