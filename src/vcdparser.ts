@@ -165,12 +165,14 @@ export class VCDParser {
   }
   */
 
+  /*
   get_scope(identifier: string): string {
     this.vars.forEach(vcdvar => {
       console.log(vcdvar);
     });
     return "";
   }
+  */
 
   parse_signal_data(_lineNumber: number, tokeniser: Tokeniser, token: string) {
     const regexPatterns = [
